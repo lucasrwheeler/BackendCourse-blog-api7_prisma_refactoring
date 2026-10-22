@@ -1,0 +1,2 @@
+prisma handles all migrations and database/schema changes -> changes in the schema file -> run migration -> prisma will generate migration files and apply changes to database and track history 
+posts + comments = one to many relationship (foreign key db table + relation fields)

@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+  comments  Comment[]
+
+  @@map("posts")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+  //relation specify below - this tells what table to join with and what column to use for the join
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+//                                      -   whenever the post is deleted, all the comments related to that post will also be deleted
+
+  //foreign key specify below
+  postId    Int      @map("post_id")
+
+  @@index([postId], name: "idx_post_id")
+  //          this above is an index on the postId column, which will speed up queries that filter by postId
+  @@map("comments")
+}
